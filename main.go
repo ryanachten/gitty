@@ -15,8 +15,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	gitty := services.CreateGitty(config.Projects)
-	gitty.Status()
+	gitty := services.CreateGitty(config.Repositories)
+	gitty.Run(arguments.Command)
 
 	// p := tea.NewProgram(
 	// 	views.NewSimplePage("This app is under construction"),

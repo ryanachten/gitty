@@ -7,7 +7,7 @@ import (
 )
 
 type Configuration struct {
-	Projects []Project `json:"projects"`
+	Repositories []Repository `json:"repositories"`
 }
 
 func ParseConfigurationFile(configPath string) (*Configuration, error) {

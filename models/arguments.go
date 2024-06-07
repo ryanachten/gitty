@@ -7,6 +7,7 @@ import (
 
 type Arguments struct {
 	ConfigurationPath string
+	Command           []string
 }
 
 // Parses command line arguments
@@ -16,9 +17,12 @@ func GetArguments() *Arguments {
 
 	flag.Parse()
 
+	// All trailing args are interpreted the git command to be executed
+	trailingArgs := flag.Args()
+
 	if configPath == "" {
 		println("Missing -config flag with path to configuration file.\n")
-		println("cmdo usage:")
+		println("gitty usage:")
 		flag.PrintDefaults()
 		os.Exit(1)
 		return nil
@@ -26,6 +30,7 @@ func GetArguments() *Arguments {
 
 	args := Arguments{
 		ConfigurationPath: configPath,
+		Command:           trailingArgs,
 	}
 
 	return &args
