@@ -2,20 +2,20 @@ package views
 
 import (
 	"fmt"
-	"os"
 
 	services "gitty/services"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/muesli/reflow/wordwrap"
-	"golang.org/x/term"
 )
 
 var (
 	modelStyle = lipgloss.NewStyle().
-			BorderStyle(lipgloss.NormalBorder())
-	helpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
+			BorderStyle(lipgloss.NormalBorder()).
+			BorderForeground(lipgloss.Color("99")).
+			Padding(1)
+	helpStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
+	headerStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("212")).Bold(true)
 )
 
 type model struct {
@@ -31,17 +31,12 @@ func ColumnView(results services.GittyResults) model {
 func (s model) Init() tea.Cmd { return nil }
 
 func (m model) View() string {
-	fd := int(os.Stdout.Fd())
-	width, _, _ := term.GetSize(fd)
-
 	resultCount := len(m.results)
-
-	cellWidth := width/resultCount - 4*resultCount
 
 	cells := make([]string, resultCount)
 	index := 0
 
-	for _, output := range m.results {
+	for repo, output := range m.results {
 
 		var content string
 		if output.Err != nil {
@@ -50,15 +45,15 @@ func (m model) View() string {
 			content = output.Result
 		}
 
-		wrappedContent := wordwrap.String(content, cellWidth)
-		cell := modelStyle.Width(cellWidth).Render(wrappedContent)
+		header := fmt.Sprintln(headerStyle.Render(repo.Label))
+		cell := fmt.Sprintf("\n%v", header) + modelStyle.Render(content)
 		cells[index] = cell
 
 		index++
 	}
 
 	contents := lipgloss.JoinVertical(lipgloss.Top, cells...)
-	contents += helpStyle.Render(fmt.Sprintln("\nctrl + c: exit"))
+	contents += helpStyle.Render(fmt.Sprintln("\nq: exit"))
 
 	return contents
 }
@@ -67,7 +62,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg.(type) {
 	case tea.KeyMsg:
 		switch msg.(tea.KeyMsg).String() {
-		case "ctrl+c":
+		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
 	}
