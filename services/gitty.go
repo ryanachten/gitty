@@ -3,7 +3,7 @@ package services
 import (
 	"os/exec"
 
-	"gitty/models"
+	"github.com/ryanachten/gitty/models"
 )
 
 // Performs git operations in a list of local repositories.

@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"gitty/models"
-	"gitty/services"
-	"gitty/views"
+	"github.com/ryanachten/gitty/models"
+	"github.com/ryanachten/gitty/services"
+	"github.com/ryanachten/gitty/views"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

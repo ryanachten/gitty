@@ -3,7 +3,7 @@ package views
 import (
 	"fmt"
 
-	services "gitty/services"
+	services "github.com/ryanachten/gitty/services"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
