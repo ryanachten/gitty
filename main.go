@@ -5,6 +5,9 @@ import (
 
 	"gitty/models"
 	"gitty/services"
+	"gitty/views"
+
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
@@ -16,13 +19,15 @@ func main() {
 	}
 
 	gitty := services.CreateGitty(config.Repositories)
-	gitty.Run(arguments.Command)
+	results := gitty.Run(arguments.Command)
 
-	// p := tea.NewProgram(
-	// 	views.NewSimplePage("This app is under construction"),
-	// )
+	p := tea.NewProgram(
+		views.ColumnView(results),
+		tea.WithAltScreen(),
+		tea.WithMouseAllMotion(),
+	)
 
-	// if _, err := p.Run(); err != nil {
-	// 	panic(err)
-	// }
+	if _, err := p.Run(); err != nil {
+		panic(err)
+	}
 }

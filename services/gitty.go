@@ -1,15 +1,23 @@
 package services
 
 import (
-	"fmt"
 	"os/exec"
 
 	"gitty/models"
 )
 
+// Performs git operations in a list of local repositories.
+// Relies on native git installations due to issues with git Go module CRLF support on Windows
 type Gitty struct {
 	repositories []models.Repository
 }
+
+type GittyOutput struct {
+	Result string
+	Err    error
+}
+
+type GittyResults map[models.Repository]GittyOutput
 
 // Initialises a new Gitty service
 func CreateGitty(repositories []models.Repository) Gitty {
@@ -21,17 +29,20 @@ func CreateGitty(repositories []models.Repository) Gitty {
 }
 
 // Runs arbitrary git commands in each folder
-func (g *Gitty) Run(args []string) {
-	for _, repo := range g.repositories {
+func (g *Gitty) Run(args []string) GittyResults {
+	result := make(GittyResults)
 
+	for _, repo := range g.repositories {
 		cmd := exec.Command("git", args...)
 		cmd.Dir = repo.WorkingDirectory
 
 		output, err := cmd.Output()
-		if err != nil {
-			fmt.Printf("Error running command: %v", err)
-		}
 
-		fmt.Printf("Output: \n %v", string(output))
+		result[repo] = GittyOutput{
+			Err:    err,
+			Result: string(output),
+		}
 	}
+
+	return result
 }
